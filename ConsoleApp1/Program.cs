@@ -1,2 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using ConsoleApp1;
+
+Console.WriteLine("(0)Text counter\n(1)Calculator");
+Menu menu = new Menu(Convert.ToInt32(Console.ReadLine()));
+menu.execute();
