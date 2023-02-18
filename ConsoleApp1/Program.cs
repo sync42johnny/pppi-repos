@@ -1,70 +1,60 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
+﻿using ConsoleApp1;
+using System.Threading;
 
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
-        //Example using System.Linq to filter a list of numbers:
-        Console.WriteLine("System.Linq");
-        int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        string originalText = "I'm so happy!";
+        string[] wordsToReplace = { "happy" };
+        string[] emojis = { "😊" };
 
-        var evenNumbers = numbers.Where(n => n % 2 == 0);
+        Thread t1 = new Thread(() => EmojiReplacer.ReplaceWordsWithEmojis(originalText, wordsToReplace, emojis));
+        Thread t2 = new Thread(new ThreadStart(Printer.PrintGreetings));
+        Thread t3 = new Thread(new ThreadStart(NumberProcessor.PrintOddAndEvenNumbers));
 
-        foreach (var number in evenNumbers)
-        {
-            Console.WriteLine(number);
-        }
+        t1.Start();
+        t2.Start();
+        t3.Start();
 
-
-        //Example using System.Diagnostics to measure the time it takes to execute a method:
-        Console.WriteLine("\nSystem.Diagnostics");
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        // Call the method to measure here
-        MyMethod("method", 'd');
-        stopwatch.Stop();
-
-        Console.WriteLine("Time elapsed: {0}", stopwatch.Elapsed);
+        t1.Join();
+        t2.Join();
+        t3.Join();
 
 
-        //Example using System.IO.File to read a file:
-        Console.WriteLine("\nSystem.IO.File");
-        string filePath = @"C:\Users\IVAN\Documents\myfile.txt";
+        Console.WriteLine("Starting asynchronous methods...");
 
-        string content = File.ReadAllText(filePath);
-        Console.WriteLine(content);
+        // Call asynchronous methods
+        Task.Run(() => DownloadFileAsync("https://cdn.myanimelist.net/images/anime/2/75259.jpg", "D:/Downloads/output.jpg")).Wait();
+        Task.Run(() => PrintFizzBuzz(50)).Wait();
 
+        Console.WriteLine("All asynchronous methods have completed.");
 
-        //Example using System.Text.RegularExpressions to match a pattern in a string:
-        Console.WriteLine("\nSystem.Text.RegularExpressions");
-        string input = "The quick brown fox jumps over the lazy dog.";
-        string pattern = "fox";
-
-        bool isMatch = Regex.IsMatch(input, pattern);
-        Console.WriteLine(isMatch ? "Match found." : "Match not found.");
-
-        //Working with the System.Collections.Generic API to use a dictionary:
-        Console.WriteLine("\nSystem.Collections.Generic");
-        var dictionary = new Dictionary<string, string>();
-        dictionary.Add("name", "John");
-        dictionary.Add("age", "25");
-
-        Console.WriteLine("Name: {0}", dictionary["name"]);
-        Console.WriteLine("Age: {0}", dictionary["age"]);
+        Console.ReadLine();
     }
 
-    static void MyMethod(string source, char toFind)
+    static async Task DownloadFileAsync(string url, string outputFilename)
     {
-        // Code to measure here
-        int count = 0;
-        foreach (var ch in source)
+        Console.WriteLine($"Starting DownloadFileAsync for {url}...");
+        using (var client = new System.Net.WebClient())
         {
-            if (ch == toFind)
-                count++;
+            await client.DownloadFileTaskAsync(url, outputFilename);
         }
-        Console.WriteLine(count);
+        Console.WriteLine($"DownloadFileAsync completed for {url}.");
+    }
+
+    static async Task PrintFizzBuzz(int count)
+    {
+        Console.WriteLine($"Starting PrintFizzBuzz for {count} numbers...");
+        for (int i = 1; i <= count; i++)
+        {
+            string output = "";
+            if (i % 3 == 0) output += "Fizz";
+            if (i % 5 == 0) output += "Buzz";
+            if (string.IsNullOrEmpty(output)) output = i.ToString();
+            Console.WriteLine(output);
+            await Task.Delay(500);
+        }
+        Console.WriteLine($"PrintFizzBuzz completed for {count} numbers.");
     }
 }
