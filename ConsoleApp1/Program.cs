@@ -4,21 +4,21 @@ class Program
 {
     static void Main(string[] args)
     {
-        //string originalText = "I'm so happy!";
-        //string[] wordsToReplace = { "happy" };
-        //string[] emojis = { "😊" };
+        string originalText = "I'm so happy!";
+        string[] wordsToReplace = { "happy" };
+        string[] emojis = { "😊" };
 
-        //Thread t1 = new Thread(() => EmojiReplacer.ReplaceWordsWithEmojis(originalText, wordsToReplace, emojis));
-        //Thread t2 = new Thread(new ThreadStart(Printer.PrintGreetings));
-        //Thread t3 = new Thread(new ThreadStart(NumberProcessor.PrintOddAndEvenNumbers));
+        Thread t1 = new Thread(() => EmojiReplacer.ReplaceWordsWithEmojis(originalText, wordsToReplace, emojis));
+        Thread t2 = new Thread(new ThreadStart(Printer.PrintGreetings));
+        Thread t3 = new Thread(new ThreadStart(NumberProcessor.PrintOddAndEvenNumbers));
 
-        //t1.Start();
-        //t2.Start();
-        //t3.Start();
+        t1.Start();
+        t2.Start();
+        t3.Start();
 
-        //t1.Join();
-        //t2.Join();
-        //t3.Join();
+        t1.Join();
+        t2.Join();
+        t3.Join();
 
 
         Console.WriteLine("Starting asynchronous methods...");
