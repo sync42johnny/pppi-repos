@@ -1,83 +1,117 @@
 ﻿using ConsoleApp1;
+using System.Reflection;
 
 class Program
 {
     static void Main(string[] args)
     {
-        string originalText = "I'm so happy!";
-        string[] wordsToReplace = { "happy" };
-        string[] emojis = { "😊" };
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        Thread t1 = new Thread(() => EmojiReplacer.ReplaceWordsWithEmojis(originalText, wordsToReplace, emojis));
-        Thread t2 = new Thread(new ThreadStart(Printer.PrintGreetings));
-        Thread t3 = new Thread(new ThreadStart(NumberProcessor.PrintOddAndEvenNumbers));
+        ///////////////////
+        Console.WriteLine("1.\tНаписати клас, який містить не менше 5 полів і не менше 3 методів. Типи даних та модифікатори доступу повинні бути різними.");
+        ///////////////////
 
-        t1.Start();
-        t2.Start();
-        t3.Start();
+        Anime attackOnTitan = new Anime("Attack on Titan", "Action", 75, "Wit Studio", "Tetsurō Araki");
 
-        t1.Join();
-        t2.Join();
-        t3.Join();
+        // Getting information about the anime and printing it to the console
+        Console.WriteLine(attackOnTitan.GetInfo());
 
+        // Changing the genre of the anime
+        attackOnTitan.SetGenre("Horror");
 
-        Console.WriteLine("Starting asynchronous methods...");
+        // Getting and printing to the console the number of episodes in the format "seasons x, episodes y"
+        Console.WriteLine(attackOnTitan.GetEpisodesFormatted());
 
-        // Call asynchronous methods
+        List<string> studios = new List<string> { "Madhouse", "Bones", "Kyoto Animation", "Shaft", "A-1 Pictures", "Gonzo" };
+        attackOnTitan.ChangeStudio(studios);
 
-        // GetRatingAsync
-        Task<int> ratingTask = Task.Run(() => GetRatingAsync("Naruto"));
-
-        Console.WriteLine($"Retrieving user rating for Naruto...");
-
-        int rating = ratingTask.Result;
-
-        Console.WriteLine($"The average user rating for Naruto is {rating}%.");
-
-        // DownloadFileAsync
-        Task.Run(() => DownloadFileAsync("https://cdn.myanimelist.net/images/anime/2/75259.jpg", "D:/Downloads/output.jpg")).Wait();
-        
-        // PrintFizzBuzz
-        Task.Run(() => PrintFizzBuzz(50)).Wait();
-
-        Console.WriteLine("All asynchronous methods have completed.");
-
-        Console.ReadLine();
-    }
-
-    static async Task<int> GetRatingAsync(string animeName)
-    {
-        // We'll simulate a delay to simulate the time it take
-        // to retrieve data from a database or other data source.
-        await Task.Delay(1000);
-
-        // simulate the user rating for the anime.
-        Random rand = new Random();
-        return rand.Next(50, 101);
-    }
-
-    static async Task DownloadFileAsync(string url, string outputFilename)
-    {
-        Console.WriteLine($"Starting DownloadFileAsync for {url}...");
-        using (var client = new System.Net.WebClient())
+        // Getting and printing to the console a list of anime with the same genre as the current anime but with a different studio and director
+        List<Anime> allAnime = new List<Anime> {
+            new Anime("Death Note", "Mystery", 37, "Madhouse", "Tetsurō Araki"),
+            new Anime("Tokyo Ghoul", "Horror", 48,"Pierrot", "Shuhei Morita"),
+            new Anime("Attack on Titan: Junior High",  "Comedy", 12, "Production I.G", "Yoshihide Ibata"),
+            new Anime("Parasyte", "Horror", 24, "Madhouse", "Kenichi Shimizu"),
+            new Anime("Black Butler", "Action",46, "A-1 Pictures", "Toshiya Shinohara")
+        };
+        List<Anime> similarAnime = attackOnTitan.GetSimilarAnime(allAnime);
+        Console.WriteLine("Similar anime:");
+        foreach (Anime anime in similarAnime)
         {
-            await client.DownloadFileTaskAsync(url, outputFilename);
+            Console.WriteLine(anime.GetInfo());
         }
-        Console.WriteLine($"DownloadFileAsync completed for {url}.");
-    }
 
-    static async Task PrintFizzBuzz(int count)
-    {
-        Console.WriteLine($"Starting PrintFizzBuzz for {count} numbers...");
-        for (int i = 1; i <= count; i++)
+        ///////////////////
+        Console.WriteLine("2.\tПродемонструвати роботу з Type і TypeInfo");
+        ///////////////////
+
+        // Get the type of Anime class
+        Type animeType = typeof(Anime);
+        Console.WriteLine("Anime class name: " + animeType.Name);
+
+        // Get the type information for the Anime class
+        TypeInfo animeTypeInfo = animeType.GetTypeInfo();
+        Console.WriteLine("Anime class has " + animeTypeInfo.DeclaredProperties.Count() + " properties:");
+
+        // Print the names of all properties of the Anime class
+        foreach (var property in animeTypeInfo.DeclaredProperties)
         {
-            string output = "";
-            if (i % 3 == 0) output += "Fizz";
-            if (i % 5 == 0) output += "Buzz";
-            if (string.IsNullOrEmpty(output)) output = i.ToString();
-            Console.WriteLine(output);
-            await Task.Delay(500);
+            Console.WriteLine("- " + property.Name);
         }
-        Console.WriteLine($"PrintFizzBuzz completed for {count} numbers.");
+
+        // Print the names of all public methods of the Anime class
+        Console.WriteLine("Anime class has " + animeTypeInfo.DeclaredMethods.Count(m => m.IsPublic) + " public methods:");
+        foreach (var method in animeTypeInfo.DeclaredMethods.Where(m => m.IsPublic))
+        {
+            Console.WriteLine("- " + method.Name);
+        }
+
+        // Print the names of all fields of the Anime class
+        Console.WriteLine("Anime class has " + animeTypeInfo.DeclaredFields.Count() + " fields:");
+        foreach (var field in animeTypeInfo.DeclaredFields)
+        {
+            Console.WriteLine("- " + field.Name);
+        }
+
+        ///////////////////
+        Console.WriteLine("3.\tПродемонструвати роботу з MemberInfo");
+        ///////////////////
+
+        // Get all the members of the Anime class
+        MemberInfo[] animeMembers = animeType.GetMembers();
+
+        foreach (MemberInfo member in animeMembers)
+        {
+            Console.WriteLine(member.Name);
+        }
+
+        ///////////////////
+        Console.WriteLine("4.\tПродемонструвати роботу з FieldInfo");
+        ///////////////////
+
+        Anime myAnime = new Anime("Cowboy Bebop", "Space Western", 26, "Sunrise", "Shinichirō Watanabe");
+
+        // Accessing field using FieldInfo
+        Type myAnimeType = typeof(Anime);
+        FieldInfo studioField = myAnimeType.GetField("studio", BindingFlags.NonPublic | BindingFlags.Instance);
+        string studioValue = (string)studioField.GetValue(myAnime);
+        Console.WriteLine($"Studio: {studioValue}");
+
+        // Modifying field using FieldInfo
+        studioField.SetValue(myAnime, "Madhouse");
+
+        ///////////////////
+        Console.WriteLine("5.\tПродемонструвати роботу з MethodInfo. Викликати будь-який метод через Reflection");
+        ///////////////////
+
+        Anime fullmetalAlchemist = new Anime("Fullmetal Alchemist", "Action", 51, "Bones", "Seiji Mizushima");
+
+        // Get the MethodInfo object for the GetInfo() method
+        MethodInfo getInfoMethod = animeType.GetMethod("GetInfo");
+
+        // Invoke the GetInfo() method on the anime instance
+        string animeInfo = (string)getInfoMethod.Invoke(fullmetalAlchemist, null);
+
+        // Print the anime information to the console
+        Console.WriteLine(animeInfo);
     }
 }
