@@ -1,13 +1,13 @@
 #1.	Що таке HTTP?
 HTTP (Hypertext Transfer Protocol) - це протокол, що використовується для передачі гіпертекстових документів в мережі Інтернет</br>
 #2.	Які групи статус кодів існують? Привести приклади з StatusCodes.
-Групи статус кодів HTTP:
+#Групи статус кодів HTTP:
 * 1xx (Informational): інформаційні повідомлення, наприклад, 100 (Continue), 101 (Switching Protocols)
 * 2xx (Successful): успішні повідомлення, наприклад, 200 (OK), 201 (Created), 204 (No Content)
 * 3xx (Redirection): повідомлення перенаправлення, наприклад, 301 (Moved Permanently), 302 (Found), 304 (Not Modified)
 * 4xx (Client Error): помилки клієнта, наприклад, 400 (Bad Request), 401 (Unauthorized), 404 (Not Found)
 * 5xx (Server Error): помилки сервера, наприклад, 500 (Internal Server Error), 503 (Service Unavailable)
-Приклади з StatusCodes в .NET:
+#Приклади з StatusCodes в .NET:
 * 200: HttpStatusCode.OK
 * 404: HttpStatusCode.NotFound
 * 500: HttpStatusCode.InternalServerError
